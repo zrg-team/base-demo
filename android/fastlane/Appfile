@@ -1,0 +1,13 @@
+# Read .ENV
+# PRODUCTION WILL BE .env.production
+# STAGING WILL BE .env
+file_path = "../../.env.#{ENV["ENV"]}"
+env_text = File.open(file_path).read
+env_text.gsub!(/\r\n?/, "\n")
+env_text.each_line do |line|
+  env_strs = line.split("=")
+  ENV[env_strs.shift] = env_strs.join('')
+end
+
+json_key_file(ENV["FASTLANE_JSON_SECRET"]) # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name(ENV["APP_IDENTIFIER"])

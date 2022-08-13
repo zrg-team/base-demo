@@ -1,0 +1,155 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# Read .ENV
+# PRODUCTION WILL BE .env.production
+# STAGING WILL BE .env
+file_path = "../../.env.#{ENV["ENV"]}"
+env_text = File.open(file_path).read
+env_text.gsub!(/\r\n?/, "\n")
+env_text.each_line do |line|
+  env_strs = line.split("=")
+  ENV[env_strs.shift] = env_strs.join('')
+end
+
+default_platform(:ios)
+
+before_all do
+  app_store_connect_api_key(
+    key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
+    issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+    key_content: ENV["APP_STORE_CONNECT_KEY"],
+    duration: 1200, # optional (maximum 1200)
+    in_house: true # optional but may be required if using match/sigh
+  )
+end
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  desc "This will also make sure the profile is up to date"
+  lane :test do
+    puts ENV["APP_IDENTIFIER"]
+  end
+  lane :betaStaging do
+    increment_version_number({
+      version_number: ENV["IOS_VERSION_NAME"]
+    })
+
+    increment_build_number({
+      build_number: latest_testflight_build_number(version: ENV["IOS_VERSION_NAME"]) + 1
+    })
+
+    create_keychain(
+      name: ENV["CI_KEYCHAIN_NAME"],
+      password: ENV["CI_KEYCHAIN_PASSWORD"],
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+
+    match(
+      app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      git_url: ENV["GIT_REPO_URL"],
+      type: "development",
+      git_branch: "master",
+      username: ENV["APPLE_DEVELOPER_ID"],
+      team_id: ENV["TEAM_ID"],
+      keychain_name: ENV["CI_KEYCHAIN_NAME"],
+      keychain_password: ENV["CI_KEYCHAIN_PASSWORD"],
+      readonly: true
+    )
+
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: ENV["IOS_PROJECT_PATH"],
+      code_sign_identity: "iPhone Developer",
+      bundle_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      profile_name: ENV["PROFILE_NAME"]
+    )
+
+    match(
+      app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      git_url: ENV["GIT_REPO_URL"],
+      type: "appstore",
+      git_branch: "master",
+      team_id: ENV["TEAM_ID"],
+      keychain_name: ENV["CI_KEYCHAIN_NAME"],
+      keychain_password: ENV["CI_KEYCHAIN_PASSWORD"],
+      readonly: true
+    )
+
+    build_app(scheme: "Staging")
+
+    upload_to_testflight
+
+    clean_build_artifacts
+  end
+  lane :beta do
+    increment_version_number({
+      version_number: ENV["IOS_VERSION_NAME"]
+    })
+
+    increment_build_number({
+      build_number: latest_testflight_build_number(version: ENV["IOS_VERSION_NAME"]) + 1
+    })
+
+    create_keychain(
+      name: ENV["CI_KEYCHAIN_NAME"],
+      password: ENV["CI_KEYCHAIN_PASSWORD"],
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+
+    match(
+      app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      git_url: ENV["GIT_REPO_URL"],
+      type: "development",
+      git_branch: "master",
+      team_id: ENV["TEAM_ID"],
+      keychain_name: ENV["CI_KEYCHAIN_NAME"],
+      keychain_password: ENV["CI_KEYCHAIN_PASSWORD"],
+      readonly: true
+    )
+
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: ENV["IOS_PROJECT_PATH"],
+      code_sign_identity: "iPhone Developer",
+      bundle_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      profile_name: ENV["PROFILE_NAME"]
+    )
+
+    match(
+      app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      git_url: ENV["GIT_REPO_URL"],
+      type: "appstore",
+      git_branch: "master",
+      username: ENV["APPLE_DEVELOPER_ID"],
+      team_id: ENV["TEAM_ID"],
+      keychain_name: ENV["CI_KEYCHAIN_NAME"],
+      keychain_password: ENV["CI_KEYCHAIN_PASSWORD"],
+      readonly: true
+    )
+
+    build_app(scheme: ENV["IOS_PROJECT_NAME"])
+
+    upload_to_testflight
+
+    clean_build_artifacts
+  end
+end

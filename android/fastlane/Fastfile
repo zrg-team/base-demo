@@ -1,0 +1,65 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+# Read .ENV
+# PRODUCTION WILL BE .env.production
+# STAGING WILL BE .env
+file_path = "../../.env.#{ENV["ENV"]}"
+env_text = File.open(file_path).read
+env_text.gsub!(/\r\n?/, "\n")
+env_text.each_line do |line|
+  env_strs = line.split("=")
+  ENV[env_strs.shift] = env_strs.join('')
+end
+
+default_platform(:android)
+
+platform :android do
+  desc "Push a new beta build to TestFlight"
+  desc "This will also make sure the profile is up to date"
+  lane :betaStaging do
+    version_code = increment_version_code(
+      gradle_file_path: "app/build.gradle"
+    )
+
+    increment_version_name(
+      version_name: ENV["ANDROID_VERSION_NAME"]
+    )
+
+    gradle(task: "clean")
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      flavor: 'Staging'
+    )
+    upload_to_play_store(track: 'beta')
+  end
+  lane :beta do
+    version_code = increment_version_code(
+      gradle_file_path: "app/build.gradle"
+    )
+
+    increment_version_name(
+      version_name: ENV["ANDROID_VERSION_NAME"]
+    )
+
+    gradle(task: "clean")
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      flavor: 'Production'
+    )
+    upload_to_play_store(track: 'beta')
+  end
+end

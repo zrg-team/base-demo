@@ -1,0 +1,15 @@
+# Read .ENV
+# PRODUCTION WILL BE .env.production
+# STAGING WILL BE .env
+file_path = "../../.env.#{ENV["ENV"]}"
+env_text = File.open(file_path).read
+env_text.gsub!(/\r\n?/, "\n")
+env_text.each_line do |line|
+  env_strs = line.split("=")
+  ENV[env_strs.shift] = env_strs.join('')
+end
+
+app_identifier(ENV["APP_IDENTIFIER"]) # The bundle identifier of your app
+apple_id(ENV["APPLE_DEVELOPER_ID"]) # Your Apple email address
+itc_team_id(ENV["ITC_TEAM_ID"]) # App Store Connect Team ID
+team_id(ENV["TEAM_ID"]) # App Developer Portal Team ID
