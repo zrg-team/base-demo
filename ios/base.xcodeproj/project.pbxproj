@@ -28,6 +28,9 @@
 		FDE173B82895610D0077D2D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		FDE173BC2895610D0077D2D2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		FDE173BD2895610D0077D2D2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		FDEE2A4128A95C7F009AB6D6 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDEE2A4028A95C7F009AB6D6 /* BootSplash.storyboard */; };
+		FDEE2A4228A95C7F009AB6D6 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDEE2A4028A95C7F009AB6D6 /* BootSplash.storyboard */; };
+		FDEE2A4328A95C7F009AB6D6 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDEE2A4028A95C7F009AB6D6 /* BootSplash.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +79,7 @@
 		FDE173B2289561080077D2D2 /* base dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "base dev-Info.plist"; path = "/Users/hung.duong/Documents/personal/base/ios/base dev-Info.plist"; sourceTree = "<absolute>"; };
 		FDE173C42895610D0077D2D2 /* baseStage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = baseStage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDE173C52895610D0077D2D2 /* base stage-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "base stage-Info.plist"; path = "/Users/hung.duong/Documents/personal/base/ios/base stage-Info.plist"; sourceTree = "<absolute>"; };
+		FDEE2A4028A95C7F009AB6D6 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = base/BootSplash.storyboard; sourceTree = "<group>"; };
 		FDF022B628A6293300A0263E /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		FDF022B728A6293300A0263E /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		FDF022B828A6293300A0263E /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -150,6 +154,7 @@
 		13B07FAE1A68108700A75B9A /* base */ = {
 			isa = PBXGroup;
 			children = (
+				FDEE2A4028A95C7F009AB6D6 /* BootSplash.storyboard */,
 				FDF022B528A6293300A0263E /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -434,6 +439,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDEE2A4128A95C7F009AB6D6 /* BootSplash.storyboard in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -443,6 +449,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDEE2A4228A95C7F009AB6D6 /* BootSplash.storyboard in Resources */,
 				FDE173A9289561070077D2D2 /* LaunchScreen.storyboard in Resources */,
 				FDE173AA289561070077D2D2 /* Images.xcassets in Resources */,
 			);
@@ -452,6 +459,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDEE2A4328A95C7F009AB6D6 /* BootSplash.storyboard in Resources */,
 				FDE173BC2895610D0077D2D2 /* LaunchScreen.storyboard in Resources */,
 				FDE173BD2895610D0077D2D2 /* Images.xcassets in Resources */,
 			);

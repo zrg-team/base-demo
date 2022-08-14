@@ -12,7 +12,6 @@ const {
   androidIconRootDestination,
   iconName,
   iconRoundName,
-  splashName,
 } = appConfig;
 
 const utility = require('./utility.js');
@@ -141,34 +140,6 @@ let copyImagesToDestinationAndroidRound = staging => {
   });
 };
 
-const copySplashImagesToDestinationAndroid = staging => {
-  return new Promise(resolve => {
-    console.log('Copy splash images to android destination');
-    let completeCount = 0;
-    androidIconConfig.forEach(elem => {
-      let thisItemFullSourceUrl = productionSourceSplash;
-      const destRootFolder = staging
-        ? androidIconRootStagingDestination
-        : androidIconRootDestination;
-      let thisItemFullDestinationUrl =
-        destRootFolder + '/' + elem.dir + '/' + splashName;
-      // copy files to destination
-      let writeStream = fs.createWriteStream(thisItemFullDestinationUrl);
-      let readStream = fs.createReadStream(thisItemFullSourceUrl);
-      writeStream.on('close', () => {
-        console.log('Successfully copied to android destination: ', elem.dir);
-        completeCount++;
-        if (completeCount >= androidIconConfig.length) {
-          resolve();
-        }
-      });
-      readStream.on('end', () => {
-        writeStream.close();
-      });
-      readStream.pipe(writeStream);
-    });
-  });
-};
 
 const makeAndroidIcons = async () => {
   try {
@@ -183,8 +154,6 @@ const makeAndroidIcons = async () => {
     await copyImagesToDestinationAndroidRound();
     await copyImagesToDestinationAndroid(true);
     await copyImagesToDestinationAndroidRound(true);
-    await copySplashImagesToDestinationAndroid();
-    await copySplashImagesToDestinationAndroid(true);
     await clearFolder(androidIconTempOutput);
     console.log(
       '======================== Done with Android ========================',

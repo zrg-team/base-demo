@@ -1,0 +1,8 @@
+{
+  "common": {
+    "app_name": "Simple App"
+  },
+  "book_detail": {
+    "also_like": "You can also like"
+  }
+}

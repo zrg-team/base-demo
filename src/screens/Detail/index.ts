@@ -1,2 +1,2 @@
-import DetailPage from './Detail';
+import DetailPage from "./Detail";
 export default DetailPage;

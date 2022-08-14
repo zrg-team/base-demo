@@ -1,2 +1,2 @@
-import WelcomePage from './Welcome';
+import WelcomePage from "./Welcome";
 export default WelcomePage;

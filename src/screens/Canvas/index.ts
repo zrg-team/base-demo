@@ -1,2 +1,2 @@
-import CanvasPage from './Canvas';
+import CanvasPage from "./Canvas";
 export default CanvasPage;

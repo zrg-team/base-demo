@@ -1,7 +1,7 @@
-import { store } from '@store/index';
+import { store } from "@store/index";
 
 function defaultDispatch(_: any) {
-  console.debug('[REDUX] Missing dispatch');
+  console.debug("[REDUX] Missing dispatch");
 }
 
 class StoreAccessible {

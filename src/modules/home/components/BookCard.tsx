@@ -1,28 +1,33 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Animated, { FlipInXDown } from 'react-native-reanimated';
-import { Book } from '@constants/mocks';
-import PosterImage from '@modules/home/components/PosterImage';
-import Rating from '@modules/home/components/Rating';
+import React, { memo, useCallback } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Animated, { FlipInXDown } from "react-native-reanimated";
+import { Book } from "@constants/mocks";
+import PosterImage from "@modules/home/components/PosterImage";
+import Rating from "@modules/home/components/Rating";
 
 interface Props {
   index: number;
   book: Book;
   onPress?: (id: string, animationType: string) => void;
 }
-const BookCard = ({ book, onPress = () => {}, index }: Props) => {
+const BookCard = memo(({ book, onPress = () => {}, index }: Props) => {
+  const handlePress = useCallback(() => {
+    return onPress && onPress(book.id, "book");
+  }, [onPress, book.id]);
   return (
-    <Animated.View entering={FlipInXDown.delay(index * 200)} style={styles.container}>
+    <Animated.View
+      entering={FlipInXDown.delay(index * 200)}
+      style={styles.container}
+    >
       <PosterImage
         index={0}
         bookId={book.id}
         uri={book.poster}
-        showPlayButton={false}
         width={80}
         height={110}
         animated={false}
-        onPress={() => onPress && onPress(book.id, 'book')}
-        sharedAnimationPrefix='book'
+        onPress={handlePress}
+        sharedAnimationPrefix="book"
       />
 
       <View style={styles.bookDetail}>
@@ -41,14 +46,14 @@ const BookCard = ({ book, onPress = () => {}, index }: Props) => {
       </View>
     </Animated.View>
   );
-};
+});
 
 export default BookCard;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    width: 300,
+    flexDirection: "row",
+    paddingHorizontal: 30,
   },
   bookDetail: {
     marginLeft: 30,
@@ -57,30 +62,30 @@ const styles = StyleSheet.create({
   },
   bookTitle: {
     fontSize: 18,
-    color: 'white',
-    width: '100%',
+    color: "white",
+    width: "100%",
   },
   authorText: {
     fontSize: 12,
     marginVertical: 5,
-    color: '#B7B6BC'
+    color: "#B7B6BC",
   },
   rowPrice: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   spacing: {
     flex: 1,
   },
   priceText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   ratingAvarageText: {
     fontSize: 14,
-    color: 'white',
+    color: "white",
     marginHorizontal: 5,
   },
   ratingPoepleText: {

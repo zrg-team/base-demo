@@ -1,15 +1,18 @@
-import React, { useMemo, useRef, useEffect } from 'react';
-import { Platform } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useMemo, useRef, createRef, useEffect } from "react";
+import { Platform } from "react-native";
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from "@react-navigation/native";
 import UnAuthenticated, {
   SCREEN_NAMES as UN_AUTHENTICATED,
   UnAuthenticatedScreenNameType,
-} from '@navigation/unAuthenticated';
+} from "@navigation/unAuthenticated";
 import Authenticated, {
   SCREEN_NAMES as AUTHENTICATED,
   AuthenticatedScreenNameType,
-} from '@navigation/authenticated';
-import useNavigationService from '@services/navigation';
+} from "@navigation/authenticated";
+import useNavigationService from "@services/navigation";
 
 type NavigationScreenNameType = {
   [key: string]: string;
@@ -24,23 +27,30 @@ type FlowNameType = {
   UN_AUTHENTICATED: string;
   AUTHENTICATED: string;
 };
+
 export const FLOW_NAMES: FlowNameType = {
-  UN_AUTHENTICATED: 'UnAuthenticated',
-  AUTHENTICATED: 'Authenticated',
+  UN_AUTHENTICATED: "UnAuthenticated",
+  AUTHENTICATED: "Authenticated",
 };
-export default function Navigator(): JSX.Element {
-  const navigationRef = useRef<any>();
+
+export default function Navigator({
+  onLoaded,
+}: {
+  onLoaded: () => void;
+}): JSX.Element {
+  const navigationRef = createRef<NavigationContainerRef<Record<string, {}>>>();
   const routeNameRef = useRef<string>();
   const previousRouteNameRef = useRef<string>();
   const navigationService = useNavigationService();
-  const initialNavigationNavigation =
-    navigationService.get('initialNavigation');
+  const initialNavigationNavigation = navigationService.get(
+    "initialNavigationState"
+  );
   useEffect(() => {
     // @ts-ignore
-    if (Platform.OS === 'web' && typeof window === 'object') {
+    if (Platform.OS === "web" && typeof window === "object") {
       // @ts-ignore
       window.onhashchange = ({ target }) => {
-        const hash = `${target.location.hash}`.replace('#/', '');
+        const hash = `${target.location.hash}`.replace("#/", "");
         if (
           navigationRef.current &&
           navigationRef.current.canGoBack() &&
@@ -53,17 +63,17 @@ export default function Navigator(): JSX.Element {
     }
     return () => {
       // @ts-ignore
-      if (Platform.OS === 'web' && typeof window === 'object') {
+      if (Platform.OS === "web" && typeof window === "object") {
         // @ts-ignore
         window.onhashchange = undefined;
       }
     };
   }, []);
   const mainNavigation = useMemo(() => {
-    if (initialNavigationNavigation === 'UnAuthenticated') {
+    if (initialNavigationNavigation === "UnAuthenticated") {
       return <UnAuthenticated />;
     }
-    if (initialNavigationNavigation === 'Authenticated') {
+    if (initialNavigationNavigation === "Authenticated") {
       return <Authenticated />;
     }
     return <UnAuthenticated />;
@@ -72,6 +82,7 @@ export default function Navigator(): JSX.Element {
     <NavigationContainer
       ref={navigationRef}
       onReady={() => {
+        onLoaded();
         routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
       }}
       onStateChange={() => {
@@ -80,7 +91,8 @@ export default function Navigator(): JSX.Element {
 
         previousRouteNameRef.current = previousRouteName;
         routeNameRef.current = currentRouteName;
-      }}>
+      }}
+    >
       {mainNavigation}
     </NavigationContainer>
   );

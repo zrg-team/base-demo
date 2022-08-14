@@ -1,41 +1,38 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { getKeyValue } from '@utils/types';
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import {
-  setNavigation,
-  clearNavigation,
-  setInitialScreen,
-  setInitialNavigation,
-} from '@actions/navigation';
-import navigationSelectors, {
-  NavigationSelectorType,
-} from '@selectors/navigation';
+  STATE_KEYS,
+  initialScreenState,
+  initialNavigationState,
+} from "@states/navigation";
+import type { NavigationStateReponse } from "@states/navigation";
 
 export default function useNavigationService(): NavigationServiceType {
-  const dispatch = useDispatch();
-
+  const setInitialScreen = useSetRecoilState(initialScreenState);
+  const setInitialNavigation = useSetRecoilState(initialNavigationState);
   return {
-    get: (key: keyof NavigationSelectorType) => {
-      const selector: any = getKeyValue(navigationSelectors, key);
-      return useSelector(selector);
-    },
-    setValue: (key: string, value: any) => {
-      dispatch(setNavigation({ key, value }));
+    get: (key: string) => {
+      switch (key) {
+        case STATE_KEYS.initialScreenState:
+          return useRecoilValue(initialScreenState);
+        case STATE_KEYS.initialScreenState:
+          return useRecoilValue(initialNavigationState);
+      }
     },
     setInitialScreen: (screen: string) => {
-      dispatch(setInitialScreen(screen));
+      setInitialScreen(screen);
     },
     setInitialNavigation: (screen: string) => {
-      dispatch(setInitialNavigation(screen));
+      setInitialNavigation(screen);
     },
     clearNavigation: () => {
-      dispatch(clearNavigation());
+      setInitialScreen(undefined);
+      setInitialNavigation(undefined);
     },
   };
 }
 
 export type NavigationServiceType = {
-  get: (key: keyof NavigationSelectorType) => any;
-  setValue: (key: string, value: any) => void;
+  get: (key: `${STATE_KEYS}`) => undefined | NavigationStateReponse;
   setInitialScreen: (screen: string) => void;
   setInitialNavigation: (screen: string) => void;
   clearNavigation: () => void;

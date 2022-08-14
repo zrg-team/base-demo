@@ -1,5 +1,5 @@
 class SecureStorage {
-  service?: string = '_SECURE_SERVICE_';
+  service?: string = "_SECURE_SERVICE_";
 
   async setValue(key: string, value: string) {
     try {

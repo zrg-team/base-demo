@@ -1,12 +1,12 @@
-import { initReactI18next } from 'react-i18next';
-import i18next, { LanguageDetectorAsyncModule } from 'i18next';
-import * as resources from '@i18n/languages';
-const defaultLanguage = 'en';
+import { initReactI18next } from "react-i18next";
+import i18next, { LanguageDetectorAsyncModule } from "i18next";
+import * as resources from "@i18n/languages";
+const defaultLanguage = "en";
 interface DetectCallback {
   (message: string): void;
 }
 const languageDetector: LanguageDetectorAsyncModule = {
-  type: 'languageDetector',
+  type: "languageDetector",
   async: true,
   detect: (callback: DetectCallback) => callback(defaultLanguage),
   init: () => {},

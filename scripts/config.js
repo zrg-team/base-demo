@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const fs = require('fs');
-const projectName = 'JiteraBase';
+const projectName = 'base';
 
 const androidIconConfig = [
   {
@@ -40,10 +40,6 @@ try {
 let tempOutputDirAndroid = path.resolve(__dirname, 'androidTemp');
 let tempOutputDirIOS = path.resolve(__dirname, 'IosTemp');
 let productionSource = path.resolve(__dirname, '../assets/images/icon.png');
-let productionSourceSplash = path.resolve(
-  __dirname,
-  '../assets/images/splash.png',
-);
 
 // Android specific
 let androidIconRootDestination = path.resolve(
@@ -53,12 +49,11 @@ let androidIconRootDestination = path.resolve(
 
 let androidIconRootStagingDestination = path.resolve(
   __dirname,
-  '../android/app/src/staging/res',
+  '../android/app/src/development/res',
 );
 
 let iconName = 'ic_launcher.png';
 let iconRoundName = 'ic_launcher_round.png';
-let splashName = 'splash.png';
 
 module.exports = {
   projectName,
@@ -66,10 +61,8 @@ module.exports = {
   tempOutputDirAndroid,
   tempOutputDirIOS,
   productionSource,
-  productionSourceSplash,
   androidIconRootDestination,
   androidIconRootStagingDestination,
   iconName,
   iconRoundName,
-  splashName,
 };

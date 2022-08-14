@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { useTheme } from 'native-base';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Carousel from 'react-native-reanimated-carousel'
-import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { useTheme } from "native-base";
+import Icon from "react-native-vector-icons/Ionicons";
+import Carousel from "react-native-reanimated-carousel";
+import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
 import Animated, {
   withTiming,
   interpolate,
@@ -12,42 +19,47 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   useAnimatedScrollHandler,
-} from 'react-native-reanimated';
-import { BlurView } from '@react-native-community/blur';
-import { BookImg, imgsPreview, booksList, Book } from '@constants/mocks';
-import PosterImage from '@modules/home/components/PosterImage';
-import BookCard from '@modules/home/components/BookCard';
+} from "react-native-reanimated";
+import { BlurView } from "@react-native-community/blur";
+import { BookImg, imgsPreview, booksList, Book } from "@constants/mocks";
+import PosterImage from "@modules/home/components/PosterImage";
+import BookCard from "@modules/home/components/BookCard";
+import { useTranslation } from "react-i18next";
 
-const { width, height } = Dimensions.get('screen')
+const { width, height } = Dimensions.get("screen");
 
-const CAROUSEL_HEIGHT = 290
-const FIX_HEADER_HEIGHT = 60
+const CAROUSEL_HEIGHT = 290;
+const FIX_HEADER_HEIGHT = 60;
 
-const AnimatedGradient = Animated.createAnimatedComponent(LinearGradient)
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView)
+const AnimatedGradient = Animated.createAnimatedComponent(LinearGradient);
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+const AnimatedList = Animated.createAnimatedComponent(FlashList);
 
 const Home = () => {
   const animationTimeoutRef = useRef<undefined | any>();
   const backgroundAnimation = useSharedValue(0);
-  const [animationColors, setAnimationColors] = useState<string[] | undefined>()
+  const [animationColors, setAnimationColors] = useState<
+    string[] | undefined
+  >();
   const colorsRef = useRef<Record<string, string[]>>({});
   const [currentSlide, setCurrentSlide] = useState<number | undefined>();
   const translationY = useSharedValue(-CAROUSEL_HEIGHT);
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const { colors: themeColors, sizes } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     return () => {
-      clearTimeout(animationTimeoutRef.current)
-    }
-  }, [])
+      clearTimeout(animationTimeoutRef.current);
+    };
+  }, []);
 
   const handleSetColors = useCallback((index: number, colors: string[]) => {
     colorsRef.current[index] = colors;
-    if (!currentSlide && index === 0) {
-      setCurrentSlide(0)
-      setAnimationColors(colors)
-      backgroundAnimation.value = withTiming(1, { duration: 1200 })
+    if (currentSlide === undefined && index === 0) {
+      setCurrentSlide(0);
+      setAnimationColors(colors);
+      backgroundAnimation.value = withTiming(1, { duration: 1200 });
     }
   }, []);
 
@@ -55,51 +67,70 @@ const Home = () => {
     translationY.value = event.contentOffset.y;
   });
 
-  const hanldeNavigateBook = useCallback((id: string, animationType: string) => {
-    navigation.navigate('Detail' as never, { bookId: id, animationType } as never);
-  }, [navigation])
+  const hanldeNavigateBook = useCallback(
+    (id: string, animationType: string) => {
+      navigation.navigate(
+        "Detail" as never,
+        { bookId: id, animationType } as never
+      );
+    },
+    [navigation]
+  );
 
   const handleIndexChanged = useCallback((index: number) => {
-    setCurrentSlide(index)
-    const colors = colorsRef.current[index]
-    clearTimeout(animationTimeoutRef.current)
+    setCurrentSlide(index);
+    const colors = colorsRef.current[index];
+    clearTimeout(animationTimeoutRef.current);
     animationTimeoutRef.current = setTimeout(() => {
-      setAnimationColors(colors)
-    }, 600)
+      setAnimationColors(colors);
+    }, 600);
     backgroundAnimation.value = withSequence(
       withTiming(0, { duration: 600 }),
-      withTiming(1, { duration: 800 }))
-  }, [])
-
-  const renderBook = useCallback(({ item, index }: { item: Book; index: number }) => (
-    <BookCard
-      index={index}
-      onPress={hanldeNavigateBook}
-      book={item}
-    />
-  ), [])
-
-  const renderCarousel = useCallback(({ item, index }: { item: BookImg; index: number }) => {
-    return (
-      <PosterImage
-        index={index}
-        width={180}
-        height={300}
-        bookId={item.id}
-        uri={item.img}
-        onFoundColor={handleSetColors}
-        onPress={hanldeNavigateBook}
-        sharedAnimationPrefix='poster'
-      />
+      withTiming(1, { duration: 800 })
     );
-  }, [])
+  }, []);
+
+  const renderBook = useCallback(
+    ({ item, index }: { item: unknown; index: number }) => {
+      return (
+        <BookCard
+          index={index}
+          onPress={hanldeNavigateBook}
+          book={item as Book}
+        />
+      );
+    },
+    []
+  );
+
+  const renderCarousel = useCallback(
+    ({ item, index }: { item: BookImg; index: number }) => {
+      return (
+        <PosterImage
+          index={index}
+          width={180}
+          height={300}
+          bookId={item.id}
+          uri={item.img}
+          onFoundColor={handleSetColors}
+          onPress={hanldeNavigateBook}
+          sharedAnimationPrefix="poster"
+        />
+      );
+    },
+    []
+  );
+
+  const keyExtractor = useCallback((item: unknown) => {
+    return (item as Book).id;
+  }, []);
 
   const animatedHeaderStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       translationY.value,
       [-CAROUSEL_HEIGHT, 50, CAROUSEL_HEIGHT],
       [1, 1, 0],
-      'clamp'
+      "clamp"
     ),
     transform: [
       {
@@ -114,11 +145,11 @@ const Home = () => {
           translationY.value,
           [-CAROUSEL_HEIGHT, 0, CAROUSEL_HEIGHT],
           [1, 1, 1.6],
-          'clamp'
+          "clamp"
         ),
       },
     ],
-  }))
+  }));
 
   const animatedBackgroundStyle = useAnimatedStyle(() => ({
     transform: [
@@ -130,48 +161,59 @@ const Home = () => {
       backgroundAnimation.value,
       [0, 1],
       [0.4, 0.8],
-      'clamp'
-    )
-  }))
+      "clamp"
+    ),
+  }));
 
   const animatedBehindBackgroundStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       backgroundAnimation.value,
       [0, 1],
       [0.4, 0.6],
-      'clamp'
-    )
-  }))
+      "clamp"
+    ),
+  }));
 
   const animatedBackgroundHeaderStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       translationY.value,
       [-CAROUSEL_HEIGHT, 0, 100, CAROUSEL_HEIGHT],
       [0, 0, 1, 1],
-      'clamp'
-    )
-  }))
+      "clamp"
+    ),
+  }));
 
   const behindBackgroundStyle = useMemo(() => {
     return [
       StyleSheet.absoluteFill,
       animatedBehindBackgroundStyle,
-      { backgroundColor: animationColors?.[0] || themeColors.defaultBackground }
-    ]
-  }, [animationColors])
+      {
+        backgroundColor: animationColors?.[0] || themeColors.defaultBackground,
+      },
+    ];
+  }, [animationColors]);
+
+  const listContentStyle = useMemo(() => {
+    return {
+      paddingBottom: sizes.tabbar,
+      paddingTop: CAROUSEL_HEIGHT + FIX_HEADER_HEIGHT,
+    };
+  }, []);
 
   return (
     <>
       <Animated.View style={behindBackgroundStyle} />
-      {animationColors ? <AnimatedGradient
-        colors={animationColors}
-        style={[styles.background, animatedBackgroundStyle]}
-      /> : null}
+      {animationColors ? (
+        <AnimatedGradient
+          colors={animationColors}
+          style={[styles.background, animatedBackgroundStyle]}
+        />
+      ) : null}
       <View style={styles.container}>
-        <Animated.FlatList
-          contentContainerStyle={[styles.listContent, { paddingBottom: sizes.tabbar }]}
+        <AnimatedList
+          contentContainerStyle={listContentStyle}
           data={booksList}
-          keyExtractor={item => item.id}
+          keyExtractor={keyExtractor}
           renderItem={renderBook}
           onScroll={scrollHandler}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -189,11 +231,11 @@ const Home = () => {
             pagingEnabled
             snapEnabled
             modeConfig={{
-              snapDirection: 'left',
+              snapDirection: "left",
               stackInterval: 18,
             }}
             enabled={currentSlide != undefined}
-            mode='horizontal-stack'
+            mode="horizontal-stack"
           />
         </Animated.View>
         <Animated.View style={styles.rowHeader}>
@@ -203,7 +245,7 @@ const Home = () => {
             reducedTransparencyFallbackColor="white"
             style={[styles.headerBackground, animatedBackgroundHeaderStyle]}
           />
-          <Text style={styles.logoText}>Books</Text>
+          <Text style={styles.logoText}>{t("common.app_name")}</Text>
           <Icon name="search-outline" size={30} color="white" />
         </Animated.View>
       </View>
@@ -215,11 +257,11 @@ export default Home;
 
 const styles = StyleSheet.create({
   background: {
-    position: 'absolute',
+    position: "absolute",
     width: height,
     height,
-    top: '-10%',
-    left: '-20%',
+    top: "-10%",
+    left: "-20%",
     borderRadius: height,
   },
   container: {
@@ -228,46 +270,46 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   rowHeader: {
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    position: "absolute",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     width,
     paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 30,
     height: FIX_HEADER_HEIGHT,
-    overflow: 'hidden'
+    overflow: "hidden",
   },
   logoText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
   },
   carouselContainer: {
     marginBottom: 0,
     height: CAROUSEL_HEIGHT,
-    width: '100%',
-    position: 'absolute',
+    width: "100%",
+    position: "absolute",
     top: FIX_HEADER_HEIGHT,
     paddingTop: 10,
   },
   booksSectionText: {
     fontSize: 18,
-    color: 'white',
+    color: "white",
     marginBottom: 25,
   },
   separator: {
     marginBottom: 20,
   },
   carousel: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  listContent: {
-    paddingTop: CAROUSEL_HEIGHT + FIX_HEADER_HEIGHT,
-    paddingHorizontal: 30,
+  headerBackground: {
+    width,
+    height: FIX_HEADER_HEIGHT,
+    position: "absolute",
   },
-  headerBackground: { width, height: FIX_HEADER_HEIGHT, position: 'absolute' },
 });

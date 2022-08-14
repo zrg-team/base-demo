@@ -4,7 +4,7 @@ const path = require('path');
 const sharp = require('sharp');
 
 const appConfig = require('./config.js');
-const { productionSource, tempOutputDirIOS, productionSourceSplash } =
+const { productionSource, tempOutputDirIOS } =
   appConfig;
 
 const utility = require('./utility.js');
@@ -18,16 +18,11 @@ let iosDestination = path.resolve(
 );
 
 let iosImageDestinationDir = iosDestination + '/AppIcon.appiconset/';
-let iosSplashImageDestinationDir = iosDestination + '/SplashScreen.imageset/';
 let iosContentsJsonUrl = iosDestination + '/AppIcon.appiconset/Contents.json';
-
-const iosContentsSpalshJsonUrl =
-  iosDestination + '/SplashScreen.imageset/Contents.json';
 
 // init storage variables
 // ios Contents.json file will be copied and manipulated in our script using this variable
 let iOSIconSetJSON = null;
-let iOSSplashSetJSON = null;
 
 let config = {
   iosMode: true,
@@ -91,15 +86,6 @@ let getIOSIconSetContentsJson = () => {
   });
 };
 
-const getIOSSplashSetContentsJson = () => {
-  return new Promise((resolve, reject) => {
-    let contentsJsonUTF8 = fs.readFileSync(iosContentsSpalshJsonUrl, 'utf8');
-    let contentsJSON = JSON.parse(contentsJsonUTF8);
-    if (!contentsJSON) reject();
-    resolve(contentsJSON);
-  });
-};
-
 let completeCount = 0;
 
 let copyImagesToDestinationIOS = () => {
@@ -151,34 +137,9 @@ let copyiOSJsonDataToDestination = () => {
   });
 };
 
-const copySplashImagesToDestinationIOS = () => {
-  return new Promise(resolve => {
-    iOSSplashSetJSON.images.forEach(elem => {
-      let thisItemFullSourceUrl = productionSourceSplash;
-      let thisItemFullDestinationUrl =
-        iosSplashImageDestinationDir + '/' + elem.filename;
-      // copy files to destination
-      let writeStream = fs.createWriteStream(thisItemFullDestinationUrl);
-      let readStream = fs.createReadStream(thisItemFullSourceUrl);
-      writeStream.on('close', () => {
-        console.log('Successfully copied to android destination: ', elem.dir);
-        completeCount++;
-        if (completeCount >= iOSSplashSetJSON.images.length) {
-          resolve();
-        }
-      });
-      readStream.on('end', () => {
-        writeStream.close();
-      });
-      readStream.pipe(writeStream);
-    });
-  });
-};
-
 let copyAllIOSData = async () => {
   await copyImagesToDestinationIOS();
   await copyiOSJsonDataToDestination();
-  await copySplashImagesToDestinationIOS();
 };
 
 const makeIOSIcons = async () => {
@@ -187,7 +148,6 @@ const makeIOSIcons = async () => {
       '======================== Make IOS icons ========================',
     );
     iOSIconSetJSON = await getIOSIconSetContentsJson();
-    iOSSplashSetJSON = await getIOSSplashSetContentsJson();
     await clearFolder(iosIconTempOutput);
     await generateIOSIconsFromSource();
     await writeiOSContentsJson();
