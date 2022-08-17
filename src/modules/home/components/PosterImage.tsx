@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, View, Dimensions } from "react-native";
 import Animated, {
   LightSpeedInRight,
   SlideInUp,
+  ZoomInEasyDown,
 } from "react-native-reanimated";
 import Image from "react-native-fast-image";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -146,11 +147,11 @@ const PosterImage = memo(
           {imageWraper}
         </TouchableOpacity>
         {showPlayButton && !isLoading ? (
-          <View style={gradientStyles}>
+          <Animated.View entering={ZoomInEasyDown.delay(600).duration(1000)} style={gradientStyles}>
             <LinearGradient colors={colors} style={styles.linearGradient}>
               <Icon name="play" size={32} color="white" />
             </LinearGradient>
-          </View>
+          </Animated.View>
         ) : null}
       </Animated.View>
     );
