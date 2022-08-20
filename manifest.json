@@ -1,0 +1,7 @@
+{
+  "display": "standalone",
+  "lang": "en",
+  "name": "base",
+  "short_name": "base",
+  "start_url": "/?utm_source=web_app_manifest"
+}
