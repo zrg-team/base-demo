@@ -4,5 +4,11 @@
   },
   "book_detail": {
     "also_like": "You can also like"
+  },
+  "errors": {
+    "web_window_size": {
+      "title": "Warning your window size",
+      "description": "The Application web version supported portrait mobile device only"
+    }
   }
 }

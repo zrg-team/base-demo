@@ -5,7 +5,8 @@ import Animated, {
   SlideInUp,
   ZoomInEasyDown,
 } from "react-native-reanimated";
-import Image from "react-native-fast-image";
+import Image from "@shared/react-native-fast-image";
+import { BlurView } from "@shared/react-native-community/blur";
 import Icon from "react-native-vector-icons/Ionicons";
 import ImageColors from "react-native-image-colors";
 import { LinearGradient } from "expo-linear-gradient";
@@ -47,7 +48,7 @@ const PosterImage = memo(
     sharedAnimationPrefix,
   }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const [colors, setColors] = useState<string[]>(["red", "blue"]);
+    const [colors, setColors] = useState<string[]>();
 
     const getColorsAsync = useCallback(async () => {
       try {
@@ -148,9 +149,16 @@ const PosterImage = memo(
         </TouchableOpacity>
         {showPlayButton && !isLoading ? (
           <Animated.View entering={ZoomInEasyDown.delay(600).duration(1000)} style={gradientStyles}>
-            <LinearGradient colors={colors} style={styles.linearGradient}>
-              <Icon name="play" size={32} color="white" />
-            </LinearGradient>
+            {colors
+            ? (
+              <LinearGradient colors={colors} style={styles.linearGradient}>
+                <Icon name="play" size={32} color="white" />
+              </LinearGradient>)
+            : (
+              <BlurView style={styles.linearGradient}>
+                 <Icon name="play" size={32} color="white" />
+              </BlurView>
+            )}
           </Animated.View>
         ) : null}
       </Animated.View>

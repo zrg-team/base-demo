@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useTheme, Pressable } from "native-base";
 import { StyleSheet, View, Platform } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
-import { BlurView } from "@react-native-community/blur";
+import { BlurView } from "@shared/react-native-community/blur";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Animated, {
   ZoomInEasyDown,

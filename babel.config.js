@@ -9,7 +9,6 @@ module.exports = function (api) {
     {},
   );
   return {
-    // 'module:metro-react-native-babel-preset'
     presets: ['module:metro-react-native-babel-preset', 'babel-preset-expo'],
     plugins: [
       [
@@ -34,6 +33,7 @@ module.exports = function (api) {
         },
       ],
       'react-native-reanimated/plugin',
+      '@babel/plugin-proposal-export-namespace-from'
     ],
   };
 };

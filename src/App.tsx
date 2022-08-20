@@ -8,6 +8,7 @@ import { enableScreens } from "react-native-screens";
 import { NativeBaseProvider } from "native-base";
 import { I18nextProvider } from "react-i18next";
 import { I18n } from "@i18n/index";
+import WebWrapper from "@components/wappers/WebWrapper";
 import AppNavigator from "@navigation/index";
 import { theme } from "@utils/theme";
 import { useAppInitial } from "@hooks/app";
@@ -24,7 +25,9 @@ const App = (): JSX.Element => {
       <NativeBaseProvider theme={theme}>
         <I18nextProvider i18n={I18n}>
           <StatusBar translucent backgroundColor="transparent" />
-          <AppNavigator onLoaded={initial} />
+          <WebWrapper>
+            <AppNavigator onLoaded={initial} />
+          </WebWrapper>
         </I18nextProvider>
       </NativeBaseProvider>
     </RecoilRoot>

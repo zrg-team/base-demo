@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StatusBar, StyleSheet, Text, View, Dimensions } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { useTheme } from "native-base";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -20,7 +20,7 @@ import Animated, {
   useAnimatedStyle,
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
-import { BlurView } from "@react-native-community/blur";
+import { BlurView } from "@shared/react-native-community/blur";
 import { BookImg, imgsPreview, booksList, Book } from "@constants/mocks";
 import PosterImage from "@modules/home/components/PosterImage";
 import BookCard from "@modules/home/components/BookCard";
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: StatusBar.currentHeight,
     paddingBottom: 5,
   },
   rowHeader: {

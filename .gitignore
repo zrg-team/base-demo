@@ -130,3 +130,4 @@ package-lock.json
 ios/Pods/
 ios/build/
 android/app/build
+.expo/

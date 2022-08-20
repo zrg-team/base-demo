@@ -46,7 +46,7 @@ export const booksList: Book[] = [
   {
     id: "3",
     poster:
-      "https://img.goldposter.com/2015/04/Star-Wars-Episode-VI-Return-of-the-Jedi_poster_goldposter_com_11.jpg",
+      "https://i.pinimg.com/originals/39/57/8c/39578c9fddeed1367164e5db6600723c.jpg",
     author: "James Kahn",
     price: 20.99,
     title: "Star Wars Return of the Jedi",
