@@ -2,7 +2,7 @@ import { extendTheme } from "native-base";
 
 export const theme = extendTheme({
   colors: {
-    defaultBackground: "#100B20",
+    defaultBackground: "#120A1F",
     raitingPersons: "#87858F",
     secondary: "#FF9671",
     star: "#FF9671",

@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import RNBootSplash from "react-native-bootsplash";
+import RNBootSplash from "@shared/react-native-bootsplash";
 
 export const useAppInitial = () => {
   useEffect(() => {

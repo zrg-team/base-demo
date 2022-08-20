@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "native-base";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import Animated, {
@@ -32,6 +32,29 @@ const ReadingBook = () => {
     translationY.value = event.contentOffset.y;
   });
 
+  const keyExtractor = useCallback(
+    (item: Book, index: number) => `${item.id}_${index}`,
+    []
+  );
+  const renderRecommendBook = useCallback(
+    ({ item }: { item: Book }) => (
+      <PosterImage
+        uri={item.poster}
+        showPlayButton={false}
+        width={70}
+        height={110}
+        bookId={item.id}
+        animated={false}
+        index={0}
+      />
+    ),
+    []
+  );
+  const renderSeparator = useCallback(
+    () => <View style={styles.separator} />,
+    []
+  );
+
   const animationImageStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -55,37 +78,16 @@ const ReadingBook = () => {
     };
   });
 
-  const keyExtractor = useCallback(
-    (item: Book, index: number) => `${item.id}_${index}`,
-    []
-  );
-
-  const renderRecommendBook = useCallback(
-    ({ item }: { item: Book }) => (
-      <PosterImage
-        uri={item.poster}
-        showPlayButton={false}
-        width={70}
-        height={110}
-        bookId={item.id}
-        animated={false}
-        index={0}
-      />
-    ),
-    []
-  );
-
-  const renderSeparator = useCallback(
-    () => <View style={styles.separator} />,
-    []
-  );
+  const containerStyles = useMemo(() => {
+    return [
+      styles.container,
+      { backgroundColor: themeColors.defaultBackground },
+    ];
+  }, [themeColors.defaultBackground]);
 
   return (
     <Animated.ScrollView
-      style={[
-        styles.container,
-        { backgroundColor: themeColors.defaultBackground },
-      ]}
+      style={containerStyles}
       onScroll={scrollHandler}
       scrollEventThrottle={16}
     >
@@ -143,9 +145,14 @@ const ReadingBook = () => {
 export default ReadingBook;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: Platform.select({
+    default: {
+      flex: 1,
+    },
+    web: {
+      height,
+    },
+  }),
   contentContainer: {
     flex: 1,
     paddingTop: 10,

@@ -131,3 +131,4 @@ ios/Pods/
 ios/build/
 android/app/build
 .expo/
+android/.gradle

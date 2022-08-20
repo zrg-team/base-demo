@@ -56,7 +56,8 @@ const PosterImage = memo(
           setIsLoading(false);
           return;
         }
-        const result = await ImageColors.getColors(uri);
+        const result = await ImageColors.getColors(uri, {});
+        console.log("result", result);
         switch (result.platform) {
           case "ios":
             setColors([result.primary, result.secondary]);
@@ -148,15 +149,17 @@ const PosterImage = memo(
           {imageWraper}
         </TouchableOpacity>
         {showPlayButton && !isLoading ? (
-          <Animated.View entering={ZoomInEasyDown.delay(600).duration(1000)} style={gradientStyles}>
-            {colors
-            ? (
+          <Animated.View
+            entering={ZoomInEasyDown.delay(600).duration(1000)}
+            style={gradientStyles}
+          >
+            {colors ? (
               <LinearGradient colors={colors} style={styles.linearGradient}>
                 <Icon name="play" size={32} color="white" />
-              </LinearGradient>)
-            : (
+              </LinearGradient>
+            ) : (
               <BlurView style={styles.linearGradient}>
-                 <Icon name="play" size={32} color="white" />
+                <Icon name="play" size={32} color="white" />
               </BlurView>
             )}
           </Animated.View>

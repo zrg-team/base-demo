@@ -92,7 +92,7 @@ export default function Navigator({
         previousRouteNameRef.current = previousRouteName;
         routeNameRef.current = currentRouteName;
         // @ts-ignore
-        if (Platform.OS === 'web' && typeof window === 'object') {
+        if (Platform.OS === "web" && typeof window === "object") {
           // @ts-ignore
           window.location.hash = `/${currentRouteName}`;
         }

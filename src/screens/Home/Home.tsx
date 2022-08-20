@@ -5,7 +5,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StatusBar, StyleSheet, Text, View, Dimensions } from "react-native";
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Platform,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { useTheme } from "native-base";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -20,39 +27,49 @@ import Animated, {
   useAnimatedStyle,
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "@shared/react-native-community/blur";
 import { BookImg, imgsPreview, booksList, Book } from "@constants/mocks";
 import PosterImage from "@modules/home/components/PosterImage";
 import BookCard from "@modules/home/components/BookCard";
 import { useTranslation } from "react-i18next";
 
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("window");
 
 const CAROUSEL_HEIGHT = 290;
 const FIX_HEADER_HEIGHT = 60;
+const CAROUSEL_CONFIG = {};
 
 const AnimatedGradient = Animated.createAnimatedComponent(LinearGradient);
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 const AnimatedList = Animated.createAnimatedComponent(FlashList);
 
 const Home = () => {
   const animationTimeoutRef = useRef<undefined | any>();
-  const backgroundAnimation = useSharedValue(0);
-  const [animationColors, setAnimationColors] = useState<
-    string[] | undefined
-  >();
+  const backgroundAnimation = useSharedValue(
+    Platform.select({ web: 1, default: 0 })
+  );
+  const [animationColors, setAnimationColors] = useState<string[] | undefined>(
+    Platform.select({ web: ["#120A1F", "#120A1F", "#120A1F"] })
+  );
   const colorsRef = useRef<Record<string, string[]>>({});
-  const [currentSlide, setCurrentSlide] = useState<number | undefined>();
+  const [currentSlide, setCurrentSlide] = useState<number | undefined>(
+    Platform.select({ web: 0 })
+  );
   const translationY = useSharedValue(-CAROUSEL_HEIGHT);
   const navigation = useNavigation();
   const { colors: themeColors, sizes } = useTheme();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     return () => {
       clearTimeout(animationTimeoutRef.current);
     };
   }, []);
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    translationY.value = event.contentOffset.y;
+  });
 
   const handleSetColors = useCallback((index: number, colors: string[]) => {
     colorsRef.current[index] = colors;
@@ -62,11 +79,6 @@ const Home = () => {
       backgroundAnimation.value = withTiming(1, { duration: 1200 });
     }
   }, []);
-
-  const scrollHandler = useAnimatedScrollHandler((event) => {
-    translationY.value = event.contentOffset.y;
-  });
-
   const hanldeNavigateBook = useCallback(
     (id: string, animationType: string) => {
       navigation.navigate(
@@ -76,20 +88,20 @@ const Home = () => {
     },
     [navigation]
   );
-
   const handleIndexChanged = useCallback((index: number) => {
     setCurrentSlide(index);
     const colors = colorsRef.current[index];
     clearTimeout(animationTimeoutRef.current);
-    animationTimeoutRef.current = setTimeout(() => {
-      setAnimationColors(colors);
-    }, 600);
-    backgroundAnimation.value = withSequence(
-      withTiming(0, { duration: 600 }),
-      withTiming(1, { duration: 800 })
-    );
+    if (colors) {
+      animationTimeoutRef.current = setTimeout(() => {
+        setAnimationColors(colors);
+      }, 600);
+      backgroundAnimation.value = withSequence(
+        withTiming(0, { duration: 600 }),
+        withTiming(1, { duration: 800 })
+      );
+    }
   }, []);
-
   const renderBook = useCallback(
     ({ item, index }: { item: unknown; index: number }) => {
       return (
@@ -102,7 +114,10 @@ const Home = () => {
     },
     []
   );
-
+  const renderSeparator = useCallback(
+    () => <View style={styles.separator} />,
+    []
+  );
   const renderCarousel = useCallback(
     ({ item, index }: { item: BookImg; index: number }) => {
       return (
@@ -120,7 +135,6 @@ const Home = () => {
     },
     []
   );
-
   const keyExtractor = useCallback((item: unknown) => {
     return (item as Book).id;
   }, []);
@@ -150,7 +164,6 @@ const Home = () => {
       },
     ],
   }));
-
   const animatedBackgroundStyle = useAnimatedStyle(() => ({
     transform: [
       {
@@ -164,7 +177,6 @@ const Home = () => {
       "clamp"
     ),
   }));
-
   const animatedBehindBackgroundStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       backgroundAnimation.value,
@@ -173,7 +185,6 @@ const Home = () => {
       "clamp"
     ),
   }));
-
   const animatedBackgroundHeaderStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       translationY.value,
@@ -192,13 +203,25 @@ const Home = () => {
       },
     ];
   }, [animationColors]);
-
   const listContentStyle = useMemo(() => {
     return {
       paddingBottom: sizes.tabbar,
-      paddingTop: CAROUSEL_HEIGHT + FIX_HEADER_HEIGHT,
+      paddingTop: CAROUSEL_HEIGHT + FIX_HEADER_HEIGHT + 20,
     };
   }, []);
+  const headerBlurStyles = useMemo(() => {
+    if (Platform.OS === "web") {
+      return [styles.headerBackgroundWeb, { zIndex: 1 }];
+    }
+    return [
+      styles.headerBackground,
+      { height: FIX_HEADER_HEIGHT + insets?.top, top: -insets?.top },
+      animatedBackgroundHeaderStyle,
+    ];
+  }, [animatedBackgroundHeaderStyle, insets?.top]);
+  const containerStyles = useMemo(() => {
+    return [styles.container, { marginTop: insets?.top }];
+  }, [insets?.top]);
 
   return (
     <>
@@ -209,14 +232,14 @@ const Home = () => {
           style={[styles.background, animatedBackgroundStyle]}
         />
       ) : null}
-      <View style={styles.container}>
+      <View style={containerStyles}>
         <AnimatedList
           contentContainerStyle={listContentStyle}
           data={booksList}
           keyExtractor={keyExtractor}
           renderItem={renderBook}
           onScroll={scrollHandler}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ItemSeparatorComponent={renderSeparator}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         />
@@ -230,21 +253,20 @@ const Home = () => {
             style={styles.carousel}
             pagingEnabled
             snapEnabled
-            modeConfig={{
-              snapDirection: "left",
-              stackInterval: 18,
-            }}
+            modeConfig={CAROUSEL_CONFIG}
             enabled={currentSlide != undefined}
             mode="horizontal-stack"
           />
         </Animated.View>
-        <Animated.View style={styles.rowHeader}>
-          <AnimatedBlurView
+        <Animated.View style={headerBlurStyles}>
+          <BlurView
             blurType="light"
             blurAmount={10}
             reducedTransparencyFallbackColor="white"
-            style={[styles.headerBackground, animatedBackgroundHeaderStyle]}
+            style={StyleSheet.absoluteFill}
           />
+        </Animated.View>
+        <Animated.View style={styles.rowHeader}>
           <Text style={styles.logoText}>{t("common.app_name")}</Text>
           <Icon name="search-outline" size={30} color="white" />
         </Animated.View>
@@ -261,13 +283,22 @@ const styles = StyleSheet.create({
     width: height,
     height,
     top: "-10%",
-    left: "-20%",
+    left: "-35%",
     borderRadius: height,
   },
   container: {
-    flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingBottom: 5,
+    ...Platform.select({
+      web: {
+        width: "100%",
+        height,
+        overflow: "visible",
+      },
+      default: {
+        flex: 1,
+      },
+    }),
   },
   rowHeader: {
     position: "absolute",
@@ -275,11 +306,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width,
-    paddingTop: 20,
+    paddingTop: Platform.select({
+      web: 10,
+    }),
     paddingBottom: 10,
     paddingHorizontal: 30,
     height: FIX_HEADER_HEIGHT,
     overflow: "hidden",
+    zIndex: 2,
   },
   logoText: {
     color: "white",
@@ -299,7 +333,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   separator: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   carousel: {
     width: "100%",
@@ -309,7 +343,15 @@ const styles = StyleSheet.create({
   },
   headerBackground: {
     width,
+    overflow: "hidden",
+    position: "absolute",
+  },
+  headerBackgroundWeb: {
+    left: 0,
+    width,
+    top: 0,
     height: FIX_HEADER_HEIGHT,
     position: "absolute",
+    zIndex: -1,
   },
 });
