@@ -2,6 +2,7 @@
   "name": "base",
   "version": "0.0.1",
   "private": true,
+  "homepage": "http://zrg-team.github.io/base-demo",
   "scripts": {
     "start": "react-native start",
     "test": "jest",
@@ -19,7 +20,8 @@
     "web:production:build": "node ./scripts/generate_web_config.js env:.env.production && npx expo export:web",
     "android:dev:build": "react-native run-android --variant=developmentrelease",
     "android:staging:build": "react-native run-android --variant=stagingrelease",
-    "android:production:build": "react-native run-android --variant=productionrelease"
+    "android:production:build": "react-native run-android --variant=productionrelease",
+    "gh:deploy": "yarn web:dev:build && gh-pages -d web-build"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
@@ -86,6 +88,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-preset-expo": "^9.1.0",
     "eslint": "^7.32.0",
+    "gh-pages": "^4.0.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.70.3",
     "prettier": "^2.7.1",
