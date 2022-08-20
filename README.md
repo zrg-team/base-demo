@@ -2,7 +2,7 @@
 
 ![design](https://raw.githubusercontent.com/zrg-team/base-demo/main/resources/design.webp)
 
-+ Simple and perform
++ Simple and performance
 + Easy to start a new project
 + Support more platform: android, ios and web
 
@@ -17,6 +17,8 @@
 + [FlashList](https://shopify.github.io/flash-list/): Fast & Performant React Native List
 
 ## Demo
+
+https://zrg-team.github.io/base-demo/#/Home
 
 <p align="left">
   <img src="https://github.com/zrg-team/base-demo/blob/main/resources/demo.gif?raw=true" width="50%" height="auto">
