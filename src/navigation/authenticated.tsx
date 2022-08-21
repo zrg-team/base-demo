@@ -5,7 +5,7 @@ import {
   NativeStackNavigationProp,
 } from "@react-navigation/native-stack";
 import useNavigationService from "@services/navigation";
-import defaultConfig from '@navigation/config'
+import defaultConfig from "@navigation/config";
 
 export type AuthenticatedScreenNameType = {
   AUTHENTICATED: string;

@@ -10,7 +10,7 @@ import {
 } from "@react-navigation/bottom-tabs";
 import useNavigationService from "@services/navigation";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
-import defaultConfig from '@navigation/config'
+import defaultConfig from "@navigation/config";
 import Tabbar from "@components/molecules/Tabbar";
 
 export type UnAuthenticatedScreenNameType = {
