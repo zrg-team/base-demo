@@ -132,3 +132,5 @@ ios/build/
 android/app/build
 .expo/
 android/.gradle
+web-build/
+.expo-shared/
