@@ -10,6 +10,7 @@ import {
 } from "@react-navigation/bottom-tabs";
 import useNavigationService from "@services/navigation";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
+import defaultConfig from '@navigation/config'
 import Tabbar from "@components/molecules/Tabbar";
 
 export type UnAuthenticatedScreenNameType = {
@@ -45,6 +46,7 @@ export const SCREEN_NAMES: UnAuthenticatedScreenNameType = {
 const UserTabStackScreenOptions = {
   headerShown: false,
   gestureEnabled: true,
+  ...defaultConfig,
 };
 const UserTabStackProps = {};
 type UserTabNavigationPropsType = {
@@ -96,6 +98,7 @@ const UserTabStack: React.FunctionComponent<UserTabNavigationPropsType> = (
 const HomeTabStackScreenOptions = {
   headerShown: false,
   gestureEnabled: true,
+  ...defaultConfig,
 };
 const HomeTabStackProps = {};
 type HomeTabNavigationPropsType = {
@@ -166,6 +169,7 @@ const HomeTabStack: React.FunctionComponent<HomeTabNavigationPropsType> = (
 const AuthenticatedTabScreenOptions = {
   headerShown: false,
   gestureEnabled: true,
+  ...defaultConfig,
 };
 const AuthenticatedTabProps = {};
 type AuthenticatedTabNavigationPropsType = {

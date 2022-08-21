@@ -5,6 +5,8 @@ import {
   NativeStackNavigationProp,
 } from "@react-navigation/native-stack";
 import useNavigationService from "@services/navigation";
+import defaultConfig from '@navigation/config'
+
 export type AuthenticatedScreenNameType = {
   AUTHENTICATED: string;
   HOME: string;
@@ -16,6 +18,7 @@ export const SCREEN_NAMES: AuthenticatedScreenNameType = {
 const AuthenticatedStackScreenOptions = {
   headerShown: false,
   gestureEnabled: true,
+  ...defaultConfig,
 };
 const AuthenticatedStackProps = {};
 type AuthenticatedNavigationPropsType = {
