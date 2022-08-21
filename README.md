@@ -2,9 +2,9 @@
 
 ![design](https://raw.githubusercontent.com/zrg-team/base-demo/main/resources/design.webp)
 
-+ Simple and perform
++ Simple and performance
 + Easy to start a new project
-+ Support more platform: android, ios and web (inprogress)
++ Support more platform: android, ios and web
 
 ## Techincal
 
@@ -18,8 +18,11 @@
 
 ## Demo
 
-<p align="center">
+https://zrg-team.github.io/base-demo/#/Home
+
+<p align="left">
   <img src="https://github.com/zrg-team/base-demo/blob/main/resources/demo.gif?raw=true" width="50%" height="auto">
+  <img src="https://github.com/zrg-team/base-demo/blob/main/resources/demo_web.gif?raw=true" width="49%" height="auto">
 </p>
 <p float="left">
   <img src="https://github.com/zrg-team/base-demo/blob/main/resources/screenshot-1.png?raw=true" width="49%" height="auto">
