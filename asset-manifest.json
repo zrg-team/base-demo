@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/base-demo/static/js/app.2c4535fb.chunk.js",
-    "app.js.map": "/base-demo/static/js/app.2c4535fb.chunk.js.map",
+    "app.js": "/base-demo/static/js/app.d6836f66.chunk.js",
+    "app.js.map": "/base-demo/static/js/app.d6836f66.chunk.js.map",
     "runtime~app.js": "/base-demo/static/js/runtime~app.6be7949f.js",
     "runtime~app.js.map": "/base-demo/static/js/runtime~app.6be7949f.js.map",
-    "static/js/2.fc8cd05e.chunk.js": "/base-demo/static/js/2.fc8cd05e.chunk.js",
-    "static/js/2.fc8cd05e.chunk.js.map": "/base-demo/static/js/2.fc8cd05e.chunk.js.map",
+    "static/js/2.359a9fa3.chunk.js": "/base-demo/static/js/2.359a9fa3.chunk.js",
+    "static/js/2.359a9fa3.chunk.js.map": "/base-demo/static/js/2.359a9fa3.chunk.js.map",
     "fonts/AntDesign.ttf": "/base-demo/./fonts/AntDesign.ttf",
     "fonts/Ionicons.ttf": "/base-demo/./fonts/Ionicons.ttf",
     "css/font-icons.css": "/base-demo/css/font-icons.css",
@@ -29,11 +29,11 @@
     "index.html": "/base-demo/index.html",
     "manifest.json": "/base-demo/manifest.json",
     "serve.json": "/base-demo/serve.json",
-    "static/js/2.fc8cd05e.chunk.js.LICENSE.txt": "/base-demo/static/js/2.fc8cd05e.chunk.js.LICENSE.txt"
+    "static/js/2.359a9fa3.chunk.js.LICENSE.txt": "/base-demo/static/js/2.359a9fa3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime~app.6be7949f.js",
-    "static/js/2.fc8cd05e.chunk.js",
-    "static/js/app.2c4535fb.chunk.js"
+    "static/js/2.359a9fa3.chunk.js",
+    "static/js/app.d6836f66.chunk.js"
   ]
 }
